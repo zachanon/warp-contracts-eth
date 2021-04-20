@@ -1,0 +1,244 @@
+{
+    "contractName": "Minter",
+    "abi": [
+        {
+            "inputs": [],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "inputs": [],
+            "name": "mintToken",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ],
+    "metadata": "{\"compiler\":{\"version\":\"0.8.3+commit.8d00100c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"mintToken\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/zach/projects/web3/warp-contracts/contracts/wormhole-protocol/xdai_contracts/mint/Minter.sol\":\"Minter\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/zach/projects/web3/warp-contracts/contracts/wormhole-protocol/xdai_contracts/mint/Minter.sol\":{\"keccak256\":\"0xff8c15064bdcc96c2567dbe50f374d76b995a3220982e3648e2887390d72c8f4\",\"urls\":[\"bzz-raw://af031f19226e1ca23efc8b07cbdeabb5e0f88c6a32b7f684a284a55cb2c134fd\",\"dweb:/ipfs/Qmf1eqCzMjdfUB9h5SwNCrzoPtxrytDvt7SR1W9sMEpkqR\"]},\"/home/zach/projects/web3/warp-contracts/interfaces/IMinter.sol\":{\"keccak256\":\"0xbc142d9523d5d975194046892de95cc18e597d758c6bcef272e0039cda94fe82\",\"urls\":[\"bzz-raw://ea7bf6862ca4f17f9625b94f4bbb3ec6612160b07aa561078280f835aec23fbf\",\"dweb:/ipfs/QmPxXioEZU8EQUuct12p2dPVLfBMN7vE8NKmRUnumM86a2\"]}},\"version\":1}",
+    "bytecode": "6080604052348015600f57600080fd5b50607780601d6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80632004ffd914602d575b600080fd5b604080516001815290519081900360200190f3fea26469706673582212203569744d5bea0cf7323f99b50c3cd9c5ca0ec4e8d9c5660c5b7a1df949697fcc64736f6c63430008030033",
+    "deployedBytecode": "6080604052348015600f57600080fd5b506004361060285760003560e01c80632004ffd914602d575b600080fd5b604080516001815290519081900360200190f3fea26469706673582212203569744d5bea0cf7323f99b50c3cd9c5ca0ec4e8d9c5660c5b7a1df949697fcc64736f6c63430008030033",
+    "sourceMap": "71:198:0:-:0;;;105:17;;;;;;;;;;71:198;;;;;;",
+    "deployedSourceMap": "71:198:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;128:138;;;;255:4;154:41:2;;128:138:0;;;;;;142:2:2;128:138:0;;",
+    "sourcePath": "/home/zach/projects/web3/warp-contracts/contracts/wormhole-protocol/xdai_contracts/mint/Minter.sol",
+    "compiler": {
+        "name": "solc",
+        "version": "0.8.3+commit.8d00100c"
+    },
+    "ast": {
+        "absolutePath": "/home/zach/projects/web3/warp-contracts/contracts/wormhole-protocol/xdai_contracts/mint/Minter.sol",
+        "exportedSymbols": {
+            "IMinter": [
+                26
+            ],
+            "Minter": [
+                18
+            ]
+        },
+        "id": 19,
+        "nodeType": "SourceUnit",
+        "nodes": [
+            {
+                "id": 1,
+                "literals": [
+                    "solidity",
+                    "^",
+                    "0.8",
+                    ".0"
+                ],
+                "nodeType": "PragmaDirective",
+                "src": "0:23:0"
+            },
+            {
+                "absolutePath": "/home/zach/projects/web3/warp-contracts/interfaces/IMinter.sol",
+                "file": "../../../../interfaces/IMinter.sol",
+                "id": 2,
+                "nameLocation": "-1:-1:-1",
+                "nodeType": "ImportDirective",
+                "scope": 19,
+                "sourceUnit": 27,
+                "src": "25:44:0",
+                "symbolAliases": [],
+                "unitAlias": ""
+            },
+            {
+                "abstract": false,
+                "baseContracts": [
+                    {
+                        "baseName": {
+                            "id": 3,
+                            "name": "IMinter",
+                            "nodeType": "IdentifierPath",
+                            "referencedDeclaration": 26,
+                            "src": "90:7:0"
+                        },
+                        "id": 4,
+                        "nodeType": "InheritanceSpecifier",
+                        "src": "90:7:0"
+                    }
+                ],
+                "contractDependencies": [
+                    26
+                ],
+                "contractKind": "contract",
+                "fullyImplemented": true,
+                "id": 18,
+                "linearizedBaseContracts": [
+                    18,
+                    26
+                ],
+                "name": "Minter",
+                "nameLocation": "80:6:0",
+                "nodeType": "ContractDefinition",
+                "nodes": [
+                    {
+                        "body": {
+                            "id": 7,
+                            "nodeType": "Block",
+                            "src": "119:3:0",
+                            "statements": []
+                        },
+                        "id": 8,
+                        "implemented": true,
+                        "kind": "constructor",
+                        "modifiers": [],
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "FunctionDefinition",
+                        "parameters": {
+                            "id": 5,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "116:2:0"
+                        },
+                        "returnParameters": {
+                            "id": 6,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "119:0:0"
+                        },
+                        "scope": 18,
+                        "src": "105:17:0",
+                        "stateMutability": "nonpayable",
+                        "virtual": false,
+                        "visibility": "public"
+                    },
+                    {
+                        "baseFunctions": [
+                            25
+                        ],
+                        "body": {
+                            "id": 16,
+                            "nodeType": "Block",
+                            "src": "237:29:0",
+                            "statements": [
+                                {
+                                    "expression": {
+                                        "hexValue": "74727565",
+                                        "id": 14,
+                                        "isConstant": false,
+                                        "isLValue": false,
+                                        "isPure": true,
+                                        "kind": "bool",
+                                        "lValueRequested": false,
+                                        "nodeType": "Literal",
+                                        "src": "255:4:0",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_bool",
+                                            "typeString": "bool"
+                                        },
+                                        "value": "true"
+                                    },
+                                    "functionReturnParameters": 13,
+                                    "id": 15,
+                                    "nodeType": "Return",
+                                    "src": "248:11:0"
+                                }
+                            ]
+                        },
+                        "functionSelector": "2004ffd9",
+                        "id": 17,
+                        "implemented": true,
+                        "kind": "function",
+                        "modifiers": [],
+                        "name": "mintToken",
+                        "nameLocation": "137:9:0",
+                        "nodeType": "FunctionDefinition",
+                        "overrides": {
+                            "id": 10,
+                            "nodeType": "OverrideSpecifier",
+                            "overrides": [],
+                            "src": "205:8:0"
+                        },
+                        "parameters": {
+                            "id": 9,
+                            "nodeType": "ParameterList",
+                            "parameters": [],
+                            "src": "146:58:0"
+                        },
+                        "returnParameters": {
+                            "id": 13,
+                            "nodeType": "ParameterList",
+                            "parameters": [
+                                {
+                                    "constant": false,
+                                    "id": 12,
+                                    "mutability": "mutable",
+                                    "name": "",
+                                    "nameLocation": "-1:-1:-1",
+                                    "nodeType": "VariableDeclaration",
+                                    "scope": 17,
+                                    "src": "231:4:0",
+                                    "stateVariable": false,
+                                    "storageLocation": "default",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_bool",
+                                        "typeString": "bool"
+                                    },
+                                    "typeName": {
+                                        "id": 11,
+                                        "name": "bool",
+                                        "nodeType": "ElementaryTypeName",
+                                        "src": "231:4:0",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_bool",
+                                            "typeString": "bool"
+                                        }
+                                    },
+                                    "visibility": "internal"
+                                }
+                            ],
+                            "src": "230:6:0"
+                        },
+                        "scope": 18,
+                        "src": "128:138:0",
+                        "stateMutability": "nonpayable",
+                        "virtual": false,
+                        "visibility": "external"
+                    }
+                ],
+                "scope": 19,
+                "src": "71:198:0"
+            }
+        ],
+        "src": "0:269:0"
+    },
+    "functionHashes": {
+        "mintToken()": "2004ffd9"
+    },
+    "gasEstimates": {
+        "creation": {
+            "codeDepositCost": "23800",
+            "executionCost": "75",
+            "totalCost": "23875"
+        },
+        "external": {
+            "mintToken()": "149"
+        }
+    }
+}
