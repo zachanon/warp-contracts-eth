@@ -5,12 +5,15 @@ import "../../interfaces/IETHWarpgate.sol";
 
 contract ETHWarpgate is IETHWarpgate {
 
-    // account with locked tokens => token address => amount
+    // user account => token address => amount
     mapping(address => mapping(address => uint)) public tokensLocked;
 
+    //user account => token address => chainid => amount
+    mapping(address => mapping(address => mapping(uint => uint))) public tokensWarped;
 
     function lockTokens(address _token, uint _amount) override external returns(bool) {
         IERC20 token = IERC20(_token);
+        
         require(
             token.allowance(msg.sender, address(this)) >= _amount,
             "Token allowance too low"
@@ -32,5 +35,30 @@ contract ETHWarpgate is IETHWarpgate {
             "Account does not have requested tokens"
         );
         return true;
+    }
+
+    function warpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) external returns(bool) {
+        
+        require(
+            tokensLocked[msg.sender][_token] >= _amount,
+            "Account does not have requested tokens locked"
+        );
+
+        tokensLocked[msg.sender][_token] -= _amount;
+        tokensWarped[msg.sender][_token][_chainid] += _amount;
+
+        emit WarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
+        
+        return true;
+    }
+
+    event WarpTokens(
+        address indexed _user,
+        address indexed _token,
+        uint indexed _amount,
+        uint indexed _chainid,
+        uint indexed _warp_address
+    ) {
+
     }
 }
