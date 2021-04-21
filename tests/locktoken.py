@@ -1,9 +1,10 @@
 import sys
-from brownie import accounts, MyToken, ETHWarpgate
+from brownie import accounts, MyToken, ETHWarpgate, MockOracle
 
 def test_lock_and_claim():
     MyToken.deploy("mytoken","mysymbol",{'from':accounts[0]})
-    ETHWarpgate.deploy({'from':accounts[-1]})
+    MockOracle.deploy({'from':accounts[-1]})
+    ETHWarpgate.deploy(MockOracle[0].address, {'from':accounts[-1]})
     initial_balance = 100000000000000000000
     num_lock = 1000
 
