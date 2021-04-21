@@ -5,6 +5,7 @@ import "../../interfaces/IETHWarpgate.sol";
 
 contract ETHWarpgate is IETHWarpgate {
 
+    //public keyword, only getters, or must change visibility?
     // user account => token address => amount
     mapping(address => mapping(address => uint)) public tokensLocked;
 
@@ -29,11 +30,18 @@ contract ETHWarpgate is IETHWarpgate {
     }
 
     function claimTokens(address _token, uint _amount) override external returns(bool) {
+        IERC20 token = IERC20(_token);
 
         require(
             tokensLocked[msg.sender][_token] >= _amount,
             "Account does not have requested tokens"
         );
+        require(
+            token.transfer(msg.sender, _amount),
+            "Transfer failed"
+        );
+
+        tokensLocked[msg.sender][_token] -= _amount;
         return true;
     }
 
@@ -44,21 +52,24 @@ contract ETHWarpgate is IETHWarpgate {
             "Account does not have requested tokens locked"
         );
 
+        //safemath?
         tokensLocked[msg.sender][_token] -= _amount;
         tokensWarped[msg.sender][_token][_chainid] += _amount;
 
         emit WarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
-        
+        return true;
+    }
+
+    function unwarpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) external returns(bool) {
+
         return true;
     }
 
     event WarpTokens(
         address indexed _user,
-        address indexed _token,
-        uint indexed _amount,
-        uint indexed _chainid,
-        uint indexed _warp_address
-    ) {
-
-    }
+        address _token,
+        uint _amount,
+        uint _chainid,
+        uint _warp_address
+    );
 }
