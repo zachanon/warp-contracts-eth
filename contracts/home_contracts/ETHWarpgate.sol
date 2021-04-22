@@ -8,12 +8,20 @@ contract ETHWarpgate is IETHWarpgate {
 
     IOracle oracle;
 
-    //public keyword, only getters, or must change visibility?
-    // user account => token address => amount
-    mapping(address => mapping(address => uint)) public tokensLocked;
+    //For ERC20: user account => token address => amount
+    mapping(address => mapping(address => uint)) private tokensLocked;
+
+    //For ETH: user account => amount in wei
+    mapping(address => uint) private etherLocked;
 
     constructor(address _oracle) public {
         oracle = IOracle(_oracle);
+    }
+
+    function lockEther() payable external returns(bool) {
+        
+        etherLocked[msg.sender] += msg.value;
+        return true;
     }
 
     function lockTokens(address _token, uint _amount) override external returns(bool) {
@@ -29,6 +37,18 @@ contract ETHWarpgate is IETHWarpgate {
         );
 
         tokensLocked[msg.sender][_token] += _amount;
+
+        return true;
+    }
+
+    function claimEther(address payable _to, uint _amount) external returns(bool) {
+        require(
+            etherLocked[msg.sender] >= _amount,
+            "Account does not have requested Ether"
+        );
+
+        etherLocked[msg.sender] -= _amount;
+        _to.transfer(_amount);
 
         return true;
     }
@@ -62,7 +82,7 @@ contract ETHWarpgate is IETHWarpgate {
         return true;
     }
 
-    function unwarpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) override external returns(bool) {
+    function dewarpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) override external returns(bool) {
         
         require(
             oracle.verifyWarp(msg.sender, _token, _amount),
@@ -76,11 +96,20 @@ contract ETHWarpgate is IETHWarpgate {
         );
 
         tokensLocked[msg.sender][_token] += _amount;
+        emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
 
         return true;
     }
 
     event WarpTokens(
+        address indexed _user,
+        address _token,
+        uint _amount,
+        uint _chainid,
+        uint _warp_address
+    );
+
+    event DewarpTokens(
         address indexed _user,
         address _token,
         uint _amount,
