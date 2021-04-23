@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.0;
 
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/ERC20.sol";
@@ -14,7 +15,7 @@ contract ETHWarpgate is IETHWarpgate {
     //For ETH: user account => amount in wei
     mapping(address => uint) private etherLocked;
 
-    constructor(address _oracle) public {
+    constructor(address _oracle) {
         oracle = IOracle(_oracle);
     }
 
