@@ -4,9 +4,11 @@ pragma solidity ^0.8.0;
 
 interface IOracle
 {
-	//Not sure whether to use keyword memory, calldata or storage https://docs.soliditylang.org/en/v0.8.3/types.html#index-14
-	function validate( uint256 root, uint256[] memory state ) external view returns (bool);
+	function validate( uint256 root, uint256[] calldata proof ) external view returns (bool);
 
-	function verifyWarp(address _user, address _token, uint amount) external returns(bool);
+	/**
+	* Convenience method, called provides the leaf components to be hashed before calling validate
+	*/
+	function validate( uint256[] memory leaf_parts, uint256[] calldata proof ) external view returns (bool);
 }
 

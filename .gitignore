@@ -5,3 +5,6 @@ build/
 bin/
 reports/
 node_modules/
+.brownie/
+.solcx/
+.vvm/

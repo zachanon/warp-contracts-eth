@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/ERC20.sol";
-import "../../interfaces/IETHWarpgate.sol";
-import "../../interfaces/IOracle.sol";
+import "../interfaces/IOracle.sol";
 
-contract ETHWarpgate is IETHWarpgate {
 
+contract WarpGate
+{
     IOracle oracle;
 
     //For ERC20: user account => token address => amount
@@ -15,7 +15,8 @@ contract ETHWarpgate is IETHWarpgate {
     //For ETH: user account => amount in wei
     mapping(address => uint) private etherLocked;
 
-    constructor(address _oracle) {
+    constructor(address _oracle)
+    {
         oracle = IOracle(_oracle);
     }
 
@@ -25,7 +26,9 @@ contract ETHWarpgate is IETHWarpgate {
         return true;
     }
 
-    function lockTokens(address _token, uint _amount) override external returns(bool) {
+    function lockTokens(address _token, uint _amount)
+        external returns(bool)
+    {
         IERC20 token = IERC20(_token);
         
         require(
@@ -42,7 +45,9 @@ contract ETHWarpgate is IETHWarpgate {
         return true;
     }
 
-    function claimEther(address payable _to, uint _amount) external returns(bool) {
+    function claimEther(address payable _to, uint _amount)
+        external returns(bool)
+    {
         require(
             etherLocked[msg.sender] >= _amount,
             "Account does not have requested Ether"
@@ -54,7 +59,9 @@ contract ETHWarpgate is IETHWarpgate {
         return true;
     }
 
-    function claimTokens(address _token, uint _amount) override external returns(bool) {
+    function claimTokens(address _token, uint _amount)
+        external returns(bool)
+    {
         IERC20 token = IERC20(_token);
 
         require(
@@ -70,7 +77,9 @@ contract ETHWarpgate is IETHWarpgate {
         return true;
     }
 
-    function warpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) override external returns(bool) {
+    function warpTokens(address _token, uint _amount, uint _chainid, uint _warp_address)
+        external returns(bool)
+    {
         
         require(
             tokensLocked[msg.sender][_token] >= _amount,
@@ -83,7 +92,9 @@ contract ETHWarpgate is IETHWarpgate {
         return true;
     }
 
-    function dewarpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) override external returns(bool) {
+    function dewarpTokens(address _token, uint _amount, uint _chainid, uint _warp_address)
+        external returns(bool)
+    {
         
         require(
             oracle.verifyWarp(msg.sender, _token, _amount),

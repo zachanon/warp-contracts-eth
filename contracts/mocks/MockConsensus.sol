@@ -6,11 +6,8 @@ import "../../interfaces/IOracleConsensus.sol";
 
 contract MockConsensus is IOracleConsensus
 {
-	constructor() {
-		
-	}
-
-	function validate( uint256 root, uint256[] memory state ) override external view returns (bool)
+	function validate( uint256 root, uint256[] memory state )
+		override external view returns (bool)
 	{
 		return true;
 	}
