@@ -8,3 +8,4 @@ node_modules/
 .brownie/
 .solcx/
 .vvm/
+hold-uncompiled/

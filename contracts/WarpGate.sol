@@ -92,12 +92,50 @@ contract WarpGate
         return true;
     }
 
-    function dewarpTokens(address _token, uint _amount, uint _chainid, uint _warp_address)
+    
+    //TODO: what gets passed here, and which oracle validate do we call?
+    //overload function for both oracle methods?
+    function dewarpTokens(
+        address _token,
+        uint _amount,
+        uint _chainid,
+        uint _warp_address,
+        uint256 root,
+        uint256[] calldata proof
+        )
         external returns(bool)
     {
         
         require(
-            oracle.verifyWarp(msg.sender, _token, _amount),
+            oracle.validate(root, proof),
+            "Oracle failed to verify"
+        );
+
+        IERC20 token = IERC20(_token);
+        require(
+            token.transfer(msg.sender, _amount),
+            "Transfer failed"
+        );
+
+        tokensLocked[msg.sender][_token] += _amount;
+        emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
+
+        return true;
+    }
+
+    function dewarpTokens(
+        address _token,
+        uint _amount,
+        uint _chainid,
+        uint _warp_address,
+        uint256[] memory leaf_parts,
+        uint256[] calldata proof
+        )
+        external returns(bool)
+    {
+        
+        require(
+            oracle.validate(leaf_parts, proof),
             "Oracle failed to verify"
         );
 
