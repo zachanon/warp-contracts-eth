@@ -2,10 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
+import "./WarpToken.sol";
 
-//Running TODO:
-// fix coonstructor call, decide on name and symbol data
-// which of _mint/mint and _burn/burn
 contract WarpedTokenMinterBurner {
 
     mapping(uint => address) deployedTokens;
@@ -23,12 +21,12 @@ contract WarpedTokenMinterBurner {
         );
 
         if(deployedTokens[_foreignAddress] != address(0)) {
-            ERC20PresetMinterPauser token = ERC20PresetMinterPauser(deployedTokens[_foreignAddress]);
+            WarpToken token = WarpToken(deployedTokens[_foreignAddress]);
             token.mint(_user, _amount);
             return true;
         }
         else {
-            ERC20PresetMinterPauser token = new ERC20PresetMinterPauser("name","symbol");
+            WarpToken token = new WarpToken("WrappedWarpToken","WARP");
             deployedTokens[_foreignAddress] = address(token);
             token.mint(_user, _amount);
             return true;
@@ -41,8 +39,16 @@ contract WarpedTokenMinterBurner {
 
         require(
             msg.sender == deployer,
-            "User does not have permisson to mint"
+            "User does not have permisson to burn"
         );
+        require(
+            deployedTokens[_foreignAddress] != address(0),
+            "Token does not exist"
+        );
+
+        WarpToken token = WarpToken(deployedTokens[_foreignAddress]);
+        token.burn(_user, _amount);
+        
         return true;
     }
 }
