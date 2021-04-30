@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import "./WarpedTokenMinter.sol";
+import "./WarpedTokenManager.sol";
 import "../interfaces/IOracle.sol";
 
 
@@ -9,29 +9,51 @@ import "../interfaces/IOracle.sol";
 contract ForeignGate {
 
     IOracle oracle;
-    WarpedTokenMinterBurner tokenManager;
+    WarpedTokenManager tokenManager;
 
     constructor(address _oracle) {
         oracle = IOracle(_oracle);
-        tokenManager = new WarpedTokenMinterBurner();
+        tokenManager = new WarpedTokenManager();
     }
 
-    function warpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) external returns(bool) {
+    function warpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address) external returns(bool) {
 
-        //token burning logic
-        require(true);
+        require(
+            tokenManager.burnWarpedToken(msg.sender, _token, _amount),
+            "Failed to burn tokens"
+        );
 
         emit WarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
         return true;
     }
 
-    function dewarpTokens(address _token, uint _amount, uint _chainid, uint _warp_address) external returns(bool) {
+    function dewarpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address, uint256 root, uint256[] calldata proof ) external returns(bool) {
 
-        //oracle validation
-        require(true);
+        require(
+            oracle.validate(root, proof),
+            "Oracle validate failed"
+        );
 
-        //mint
-        require(true);
+        require(
+            tokenManager.mintWarpedToken(msg.sender, _token, _amount),
+            "Failed to mint tokens"
+        );
+
+        emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
+        return true;
+    }
+
+    function dewarpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address, uint256[] memory leaf_parts, uint256[] calldata proof ) external returns(bool) {
+
+        require(
+            oracle.validate(leaf_parts, proof),
+            "Oracle validate failed"
+        );
+
+        require(
+            tokenManager.mintWarpedToken(msg.sender, _token, _amount),
+            "Failed to mint tokens"
+        );
 
         emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
         return true;
@@ -39,7 +61,7 @@ contract ForeignGate {
 
     event WarpTokens(
         address indexed _user,
-        address _token,
+        uint _token,
         uint _amount,
         uint _chainid,
         uint _warp_address
@@ -47,7 +69,7 @@ contract ForeignGate {
 
     event DewarpTokens(
         address indexed _user,
-        address _token,
+        uint _token,
         uint _amount,
         uint _chainid,
         uint _warp_address

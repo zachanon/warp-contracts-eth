@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
 import "./WarpToken.sol";
 
-contract WarpedTokenMinterBurner {
+contract WarpedTokenManager {
 
     mapping(uint => address) deployedTokens;
     address deployer;
