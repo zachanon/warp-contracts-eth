@@ -5,11 +5,10 @@ import "./WarpedTokenManager.sol";
 import "../interfaces/IOracle.sol";
 
 
-//TODO: warp/dewarp logic, oracle logic
 contract ForeignGate {
 
-    IOracle oracle;
-    WarpedTokenManager tokenManager;
+    IOracle private oracle;
+    WarpedTokenManager private tokenManager;
 
     constructor(address _oracle) {
         oracle = IOracle(_oracle);

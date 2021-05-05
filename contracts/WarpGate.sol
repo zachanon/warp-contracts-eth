@@ -12,18 +12,9 @@ contract WarpGate
     //For ERC20: user account => token address => amount
     mapping(address => mapping(address => uint)) private tokensLocked;
 
-    //For ETH: user account => amount in wei
-    mapping(address => uint) private etherLocked;
-
     constructor(address _oracle)
     {
         oracle = IOracle(_oracle);
-    }
-
-    function lockEther() payable external returns(bool) {
-        
-        etherLocked[msg.sender] += msg.value;
-        return true;
     }
 
     function lockTokens(address _token, uint _amount)
@@ -41,20 +32,6 @@ contract WarpGate
         );
 
         tokensLocked[msg.sender][_token] += _amount;
-
-        return true;
-    }
-
-    function claimEther(address payable _to, uint _amount)
-        external returns(bool)
-    {
-        require(
-            etherLocked[msg.sender] >= _amount,
-            "Account does not have requested Ether"
-        );
-
-        etherLocked[msg.sender] -= _amount;
-        _to.transfer(_amount);
 
         return true;
     }

@@ -3,19 +3,20 @@ pragma solidity ^0.8.0;
 
 import "./WarpToken.sol";
 
+//Contract callable only to the deployer. Used to mint and burn wrapped tokens corresponding to the address of the token on the ETH chain.
 contract WarpedTokenManager {
 
-    mapping(uint => address) deployedTokens;
-    address deployer;
+    address private _deployer;
+    mapping(uint => address) private deployedTokens;
 
     constructor() {
-        deployer = msg.sender;
+        _deployer = msg.sender;
     }
 
     function mintWarpedToken(address _user, uint _foreignAddress, uint _amount) external returns(bool) {
 
         require(
-            msg.sender == deployer,
+            msg.sender == _deployer,
             "User does not have permisson to mint"
         );
 
@@ -37,7 +38,7 @@ contract WarpedTokenManager {
     function burnWarpedToken(address _user, uint _foreignAddress, uint _amount) external returns(bool) {
 
         require(
-            msg.sender == deployer,
+            msg.sender == _deployer,
             "User does not have permisson to burn"
         );
         require(
@@ -49,5 +50,15 @@ contract WarpedTokenManager {
         token.burn(_user, _amount);
         
         return true;
+    }
+
+    function getMintedTokenAddress(uint _foreignAddress) external returns(address) {
+
+        require(
+            deployedTokens[_foreignAddress] != address(0),
+            "Token not deployed"
+        );
+
+        return deployedTokens[_foreignAddress];
     }
 }

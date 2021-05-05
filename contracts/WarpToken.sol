@@ -4,7 +4,9 @@ import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/IERC20.s
 
 contract WarpToken is IERC20 {
 
-    address _deployer;
+    address private _deployer;
+
+    /* ERC20 Boilerplate Begin */
 
     mapping (address => uint256) private _balances;
     
@@ -51,12 +53,12 @@ contract WarpToken is IERC20 {
         return true;
     }
 
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
         _approve(msg.sender, spender, _allowances[msg.sender][spender] + addedValue);
         return true;
     }
 
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
         uint256 currentAllowance = _allowances[msg.sender][spender];
         require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
         _approve(msg.sender, spender, currentAllowance - subtractedValue);
@@ -64,7 +66,7 @@ contract WarpToken is IERC20 {
         return true;
     }
 
-    function _transfer(address sender, address recipient, uint256 amount) internal virtual {
+    function _transfer(address sender, address recipient, uint256 amount) internal {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
@@ -78,7 +80,7 @@ contract WarpToken is IERC20 {
         emit Transfer(sender, recipient, amount);
     }
 
-    function _mint(address account, uint256 amount) internal virtual {
+    function _mint(address account, uint256 amount) internal {
         require(account != address(0), "ERC20: mint to the zero address");
 
         _beforeTokenTransfer(address(0), account, amount);
@@ -88,7 +90,7 @@ contract WarpToken is IERC20 {
         emit Transfer(address(0), account, amount);
     }
 
-    function _burn(address account, uint256 amount) internal virtual {
+    function _burn(address account, uint256 amount) internal {
         require(account != address(0), "ERC20: burn from the zero address");
 
         _beforeTokenTransfer(account, address(0), amount);
@@ -101,7 +103,7 @@ contract WarpToken is IERC20 {
         emit Transfer(account, address(0), amount);
     }
 
-    function _approve(address owner, address spender, uint256 amount) internal virtual {
+    function _approve(address owner, address spender, uint256 amount) internal {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
@@ -109,10 +111,11 @@ contract WarpToken is IERC20 {
         emit Approval(owner, spender, amount);
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual { }
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal { }
 
+    /* ERC20 Biolerplate END */
 
-    function mint(address _to, uint _amount) public returns(bool) {
+    function mint(address _to, uint _amount) external returns(bool) {
 
         require(
             msg.sender == _deployer,
@@ -123,7 +126,7 @@ contract WarpToken is IERC20 {
         return true;
     }
 
-    function burn(address _from, uint _amount) public returns(bool) {
+    function burn(address _from, uint _amount) external returns(bool) {
 
         require(
             msg.sender == _deployer,
