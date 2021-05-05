@@ -1,13 +1,19 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.0;
 
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/IERC20.sol";
 
+
+/*
+    Contract representing an ERC20 token located on Ethereum. Minted to users that successfully
+    claim warped tokens through the ForeignGate contract.
+*/
 contract WarpToken is IERC20 {
 
     address private _deployer;
 
     /* ERC20 Boilerplate Begin */
-
+    /* ******************** */
     mapping (address => uint256) private _balances;
     
     mapping (address => mapping (address => uint256)) private _allowances;
@@ -112,9 +118,12 @@ contract WarpToken is IERC20 {
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal { }
+    /* ******************** */
+    /* ERC20 Boilerplate END */
 
-    /* ERC20 Biolerplate END */
-
+    /*
+     * Function called only by WarpedTokenManager. Mints tokens to user claiming from the ForeignGate
+     */
     function mint(address _to, uint _amount) external returns(bool) {
 
         require(
@@ -126,6 +135,9 @@ contract WarpToken is IERC20 {
         return true;
     }
 
+    /*
+     * Function called only by WarpedTokenManager. Burns tokens from user calling warpTokens function from ForeignGate
+     */
     function burn(address _from, uint _amount) external returns(bool) {
 
         require(

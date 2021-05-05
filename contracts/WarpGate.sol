@@ -4,10 +4,26 @@ pragma solidity ^0.8.0;
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/ERC20.sol";
 import "../interfaces/IOracle.sol";
 
+/*
+    Interface for users on the Ethereum chain.
+        To WARP tokens:
+        - The user first locks tokens with the WarpGate by calling lockTokens
+        - The user then calls warpTokens with:
+            - chainid of the chain to warp to
+            - address on the foreign chain that can claim tokens
+            - the token to warp and the amount
 
+        To CLAIM tokens warped on a foreign chain:
+        - The user must update the oracle with their claim
+        - The user calls dewarpTokens with:
+            - data of the tokens being claimed (chainid, amount, token address, foreign user address)
+            - proof of the claim
+        - The tokens will be assigned to the user but still locked in the WarpGate. To retrieve to the user address,
+            the user must call claimTokens, which will transfer to the user specified address.
+*/
 contract WarpGate
 {
-    IOracle oracle;
+    IOracle private oracle;
 
     //For ERC20: user account => token address => amount
     mapping(address => mapping(address => uint)) private tokensLocked;
@@ -17,6 +33,10 @@ contract WarpGate
         oracle = IOracle(_oracle);
     }
 
+    /*
+        User called function to lock tokens into the WarpGate.
+        Must be called before tokens can be warped.
+    */
     function lockTokens(address _token, uint _amount)
         external returns(bool)
     {
@@ -36,6 +56,9 @@ contract WarpGate
         return true;
     }
 
+    /*
+        User called function to claim tokens locked in WarpGate.
+    */
     function claimTokens(address _token, uint _amount)
         external returns(bool)
     {
@@ -54,6 +77,13 @@ contract WarpGate
         return true;
     }
 
+    /*
+        User called function to warp tockens to a foreign chain. User must specify:
+            - local token address and amount
+            - foreign chainid
+            - address that can claim tokens on the foreign chain
+
+    */
     function warpTokens(address _token, uint _amount, uint _chainid, uint _warp_address)
         external returns(bool)
     {
@@ -69,9 +99,15 @@ contract WarpGate
         return true;
     }
 
-    
-    //TODO: what gets passed here, and which oracle validate do we call?
-    //overload function for both oracle methods?
+    /*
+        User called function to claim tokens warped from a foreign chain. User must first
+        update the WarpGate oracle contract before calling. User must supply:
+            - local address of the token and amount warped
+            - foreign chainid and address that warped the tokens
+            - proof of claim to submit to oracle
+
+        Tokens will then be assigned to user in lock with the WarpGate.
+    */
     function dewarpTokens(
         address _token,
         uint _amount,
@@ -79,8 +115,7 @@ contract WarpGate
         uint _warp_address,
         uint256 root,
         uint256[] calldata proof
-        )
-        external returns(bool)
+        ) external returns(bool)
     {
         
         require(
@@ -100,6 +135,15 @@ contract WarpGate
         return true;
     }
 
+    /*
+        User called function to claim tokens warped from a foreign chain. User must first
+        update the WarpGate oracle contract before calling. User must supply:
+            - local address of the token and amount warped
+            - foreign chainid and address that warped the tokens
+            - proof of claim to submit to oracle
+
+        Tokens will then be assigned to user in lock with the WarpGate.
+    */
     function dewarpTokens(
         address _token,
         uint _amount,
@@ -126,6 +170,11 @@ contract WarpGate
         emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
 
         return true;
+    }
+
+    //returns address of the validator oracle contract for this WarpGate
+    function getWarpGateOracle() returns(address) {
+        return address(oracle);
     }
 
     event WarpTokens(

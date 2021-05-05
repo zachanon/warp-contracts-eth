@@ -15,6 +15,12 @@ contract ForeignGate {
         tokenManager = new WarpedTokenManager();
     }
 
+    /*
+        Called when user wishes to transport their tokens off this chain.
+        Requires user to specify which chain they would like to warp on to, and the address of the
+        account on the foreign chain that can claim the warped tokens. Then burns tokens from user's
+        address and emits a WarpTokens event.
+    */
     function warpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address) external returns(bool) {
 
         require(
@@ -26,6 +32,10 @@ contract ForeignGate {
         return true;
     }
 
+    /*
+        Called when user wishes to claim tokens warped from another chain. User must submit data for the oracle to verify against.
+        If claim is successful, mints the claimed WarpTokens to user's wallet and emits a DewarpTokens event.
+    */
     function dewarpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address, uint256 root, uint256[] calldata proof ) external returns(bool) {
 
         require(
@@ -42,6 +52,10 @@ contract ForeignGate {
         return true;
     }
 
+    /*
+        Called when user wishes to claim tokens warped from another chain. User must submit data for the oracle to verify against.
+        If claim is successful, mints the claimed WarpTokens to user's wallet and emits a DewarpTokens event.
+    */
     function dewarpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address, uint256[] memory leaf_parts, uint256[] calldata proof ) external returns(bool) {
 
         require(
