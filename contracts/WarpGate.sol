@@ -173,7 +173,7 @@ contract WarpGate
     }
 
     //returns address of the validator oracle contract for this WarpGate
-    function getWarpGateOracle() returns(address) {
+    function getWarpGateOracle() external view returns(address) {
         return address(oracle);
     }
 

@@ -4,7 +4,9 @@ pragma solidity ^0.8.0;
 import "./WarpedTokenManager.sol";
 import "../interfaces/IOracle.sol";
 
-
+/*
+    Contract for users to interface with on foreign chains. Provides warp and dewarp functions.
+*/
 contract ForeignGate {
 
     IOracle private oracle;
@@ -70,6 +72,11 @@ contract ForeignGate {
 
         emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
         return true;
+    }
+
+    //returns the address of the oracle verifier contract for ForeignGate
+    function getForeignGateOracle() external view returns(address) {
+        return address(oracle);
     }
 
     event WarpTokens(
