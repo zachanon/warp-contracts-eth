@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/ERC20.sol";
+import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/proxy/utils/Initializable.sol";
 import "../interfaces/IOracle.sol";
 
 /*
@@ -21,16 +22,15 @@ import "../interfaces/IOracle.sol";
         - The tokens will be assigned to the user but still locked in the WarpGate. To retrieve to the user address,
             the user must call claimTokens, which will transfer to the user specified address.
 */
-contract WarpGate
-{
-    IOracle private oracle;
+contract WarpGate is Initializable {
+
+    IOracle private _oracle;
 
     //For ERC20: user account => token address => amount
     mapping(address => mapping(address => uint)) private tokensLocked;
 
-    constructor(address _oracle)
-    {
-        oracle = IOracle(_oracle);
+    function initialize(address oracle_) public initializer {
+        _oracle = IOracle(oracle_);
     }
 
     /*
@@ -119,7 +119,7 @@ contract WarpGate
     {
         
         require(
-            oracle.validate(root, proof),
+            _oracle.validate(root, proof),
             "Oracle failed to verify"
         );
 
@@ -156,7 +156,7 @@ contract WarpGate
     {
         
         require(
-            oracle.validate(leaf_parts, proof),
+            _oracle.validate(leaf_parts, proof),
             "Oracle failed to verify"
         );
 
@@ -174,7 +174,7 @@ contract WarpGate
 
     //returns address of the validator oracle contract for this WarpGate
     function getWarpGateOracle() external view returns(address) {
-        return address(oracle);
+        return address(_oracle);
     }
 
     event WarpTokens(
