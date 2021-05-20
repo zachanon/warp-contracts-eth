@@ -135,43 +135,6 @@ contract WarpGate  {
         return true;
     }
 
-    /*
-        User called function to claim tokens warped from a foreign chain. User must first
-        update the WarpGate oracle contract before calling. User must supply:
-            - local address of the token and amount warped
-            - foreign chainid and address that warped the tokens
-            - proof of claim to submit to oracle
-
-        Tokens will then be assigned to user in lock with the WarpGate.
-    */
-    function dewarpTokens(
-        address _token,
-        uint _amount,
-        uint _chainid,
-        uint _warp_address,
-        uint256[] memory leaf_parts,
-        uint256[] calldata proof
-        )
-        external returns(bool)
-    {
-        
-        require(
-            _oracle.validate(leaf_parts, proof),
-            "Oracle failed to verify"
-        );
-
-        IERC20 token = IERC20(_token);
-        require(
-            token.transfer(msg.sender, _amount),
-            "Transfer failed"
-        );
-
-        tokensLocked[msg.sender][_token] += _amount;
-        emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
-
-        return true;
-    }
-
     //returns address of the validator oracle contract for this WarpGate
     function getWarpGateOracle() external view returns(address) {
         return address(_oracle);
