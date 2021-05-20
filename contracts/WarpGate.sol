@@ -22,7 +22,7 @@ import "../interfaces/IOracle.sol";
         - The tokens will be assigned to the user but still locked in the WarpGate. To retrieve to the user address,
             the user must call claimTokens, which will transfer to the user specified address.
 */
-contract WarpGate is Initializable {
+contract WarpGate  {
 
     IOracle private _oracle;
 
