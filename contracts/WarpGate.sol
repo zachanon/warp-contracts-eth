@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/token/ERC20/ERC20.sol";
 import "OpenZeppelin/openzeppelin-contracts@4.0.0/contracts/proxy/utils/Initializable.sol";
-import "../interfaces/IOracle.sol";
+import "../interfaces/IValidator.sol";
 
 /*
     Interface for users on the Ethereum chain.
@@ -15,7 +15,7 @@ import "../interfaces/IOracle.sol";
             - the token to warp and the amount
 
         To CLAIM tokens warped on a foreign chain:
-        - The user must update the oracle with their claim
+        - The user must update the validator with their claim
         - The user calls dewarpTokens with:
             - data of the tokens being claimed (chainid, amount, token address, foreign user address)
             - proof of the claim
@@ -24,13 +24,13 @@ import "../interfaces/IOracle.sol";
 */
 contract WarpGate  {
 
-    IOracle private _oracle;
+    IValidator private _validator;
 
     //For ERC20: user account => token address => amount
     mapping(address => mapping(address => uint)) private _tokensLocked;
 
-    constructor(address oracle_) {
-        _oracle = IOracle(oracle_);
+    constructor(address validator_) {
+        _validator = IValidator(validator_);
     }
 
     /*
@@ -99,6 +99,7 @@ contract WarpGate  {
         );
 
         tokensLocked[msg.sender][token_] -= amount_;
+
         emit WarpTokens(
             msg.sender,
             token_,
@@ -111,10 +112,10 @@ contract WarpGate  {
 
     /*
         User called function to claim tokens warped from a foreign chain. User must first
-        update the WarpGate oracle contract before calling. User must supply:
+        update the WarpGate validator contract before calling. User must supply:
             - local address of the token and amount warped
             - foreign chainid and address that warped the tokens
-            - proof of claim to submit to oracle
+            - proof of claim to submit to validator
 
         Tokens will then be assigned to user in lock with the WarpGate.
     */
@@ -127,13 +128,13 @@ contract WarpGate  {
     {
         
         require(
-            _oracle.validate(
+            _validator.validate(
                 msg.sender,
                 token_,
                 amount_,
                 chainId_,
                 warpAddress_),
-            "Oracle failed to verify"
+            "validator failed to verify"
         );
 
         IERC20 token = IERC20(token_);
@@ -143,13 +144,13 @@ contract WarpGate  {
         );
 
         tokensLocked[msg.sender][token_] += amount_;
+       
         emit DewarpTokens(
             msg.sender,
             token_,
             amount_,
             chainId_,
-            warpAddress_
-            );
+            warpAddress_);
 
         return true;
     }

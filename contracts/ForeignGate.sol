@@ -2,19 +2,19 @@
 pragma solidity ^0.8.0;
 
 import "./WarpedTokenManager.sol";
-import "../interfaces/IOracle.sol";
+import "../interfaces/IValidator.sol";
 
 /*
     Contract for users to interface with on foreign chains. Provides warp and dewarp functions.
 */
 contract ForeignGate {
 
-    IOracle private oracle;
-    WarpedTokenManager private tokenManager;
+    IValidator private _validator;
+    WarpedTokenManager private _tokenManager;
 
-    constructor(address _oracle) {
-        oracle = IOracle(_oracle);
-        tokenManager = new WarpedTokenManager();
+    constructor(address validator_) {
+        _validator = IValidator(validator_);
+        _tokenManager = new WarpedTokenManager();
     }
 
     /*
@@ -23,75 +23,71 @@ contract ForeignGate {
         account on the foreign chain that can claim the warped tokens. Then burns tokens from user's
         address and emits a WarpTokens event.
     */
-    function warpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address) external returns(bool) {
+    function warpTokens(uint token_, uint amount_, uint chainId_, uint warpAddress_) external returns(bool) {
 
         require(
-            tokenManager.burnWarpedToken(msg.sender, _token, _amount),
+            tokenManager.burnWarpedToken(msg.sender, token_, amount_),
             "Failed to burn tokens"
         );
 
-        emit WarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
+        emit WarpTokens(
+            msg.sender,
+            token_,
+            amount_, 
+            chainId_, 
+            warpAddress_);
         return true;
     }
 
     /*
-        Called when user wishes to claim tokens warped from another chain. User must submit data for the oracle to verify against.
+        Called when user wishes to claim tokens warped from another chain. User must submit data for the validator to verify against.
         If claim is successful, mints the claimed WarpTokens to user's wallet and emits a DewarpTokens event.
     */
-    function dewarpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address, uint256 root, uint256[] calldata proof ) external returns(bool) {
-
+    function dewarpTokens(
+        address token_,
+        uint amount_,
+        uint chainId_,
+        uint warpAddress_
+        ) external returns(bool)
+    {
         require(
-            oracle.validate(root, proof),
-            "Oracle validate failed"
+            _validator.validate(
+                msg.sender,
+                token_,
+                amount_,
+                chainId_,
+                warpAddress_),
+            "Failed to validate"
         );
 
         require(
-            tokenManager.mintWarpedToken(msg.sender, _token, _amount),
+            tokenManager.mintWarpedToken(msg.sender, token_, amount_),
             "Failed to mint tokens"
         );
 
-        emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
+        emit DewarpTokens(
+            msg.sender,
+            token_,
+            amount_,
+            chainId_,
+            warpAddress_);
+        
         return true;
-    }
-
-    /*
-        Called when user wishes to claim tokens warped from another chain. User must submit data for the oracle to verify against.
-        If claim is successful, mints the claimed WarpTokens to user's wallet and emits a DewarpTokens event.
-    */
-    function dewarpTokens(uint _token, uint _amount, uint _chainid, uint _warp_address, uint256[] memory leaf_parts, uint256[] calldata proof ) external returns(bool) {
-
-        require(
-            oracle.validate(leaf_parts, proof),
-            "Oracle validate failed"
-        );
-
-        require(
-            tokenManager.mintWarpedToken(msg.sender, _token, _amount),
-            "Failed to mint tokens"
-        );
-
-        emit DewarpTokens(msg.sender, _token, _amount, _chainid, _warp_address);
-        return true;
-    }
-
-    //returns the address of the oracle verifier contract for ForeignGate
-    function getForeignGateOracle() external view returns(address) {
-        return address(oracle);
     }
 
     event WarpTokens(
-        address indexed _user,
-        uint _token,
-        uint _amount,
-        uint _chainid,
-        uint _warp_address
+        address indexed user,
+        address token,
+        uint amount,
+        uint chainId,
+        uint warpAddress
     );
 
     event DewarpTokens(
-        address indexed _user,
-        uint _token,
-        uint _amount,
-        uint _chainid,
-        uint _warp_address
+        address indexed user,
+        address token,
+        uint amount,
+        uint chainId,
+        uint warpAddress
     );
 }

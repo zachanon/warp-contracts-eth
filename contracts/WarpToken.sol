@@ -20,28 +20,28 @@ contract WarpToken is ERC20 {
     /*
      * Function called only by WarpedTokenManager. Mints tokens to user claiming from the ForeignGate
      */
-    function mint(address _to, uint _amount) external returns(bool) {
+    function mint(address to_, uint amount_) external returns(bool) {
 
         require(
             msg.sender == _deployer,
             "Only the deployer can call this function"
         );
 
-        _mint(_to, _amount);
+        _mint(to_, amount_);
         return true;
     }
 
     /*
      * Function called only by WarpedTokenManager. Burns tokens from user calling warpTokens function from ForeignGate
      */
-    function burn(address _from, uint _amount) external returns(bool) {
+    function burn(address from_, uint amount_) external returns(bool) {
 
         require(
             msg.sender == _deployer,
             "Only the deployer can call this function"
         );
 
-        _burn(_from, _amount);
+        _burn(from_, amount_);
         return true;
     }
 }

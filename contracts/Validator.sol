@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "./chainlink/dev/ChainlinkClient.sol";
-import "../interfaces/IOracle.sol";
+import "../interfaces/IValidator.sol";
 
-contract GateOracle is ChainlinkClient, IOracle {
+contract Validator is ChainlinkClient, IValidator {
 
     address private _oracle;
     bytes32 private _jobId;
@@ -24,7 +24,7 @@ contract GateOracle is ChainlinkClient, IOracle {
      }
 
     function requestValidation(
-         address user_,
+        address user_,
 		address token_,
 		uint256 amount_,
 		uint256 chainId_,
@@ -35,7 +35,7 @@ contract GateOracle is ChainlinkClient, IOracle {
 
         request.add("get", "https://PLACEHOLDER");
         request.add("path", "PATH.TO.VALIDATION.BOOLEAN");
-        return sendChainlinkRequestTo(_oracle, _request, _fee);
+        return sendChainlinkRequestTo(_oracle, request, _fee);
     }
 
     function fulfill() external {}
