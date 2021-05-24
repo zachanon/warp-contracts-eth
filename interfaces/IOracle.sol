@@ -3,5 +3,11 @@ pragma solidity ^0.8.0;
 
 interface IOracle {
 
-	function validate(uint256 root, uint256[] calldata proof) external returns(bool);
+	function validate(
+		address user_,
+		address token_,
+		uint256 amount_,
+		uint256 chainId_,
+		uint256 warpAddress_
+		) external returns(bool);
 }
