@@ -1,53 +1,53 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.0;
 
+import "./chainlink/dev/ChainlinkClient.sol";
 import "../interfaces/IOracle.sol";
-import "../interfaces/IOracleConsensus.sol";
 
+contract GateOracle is ChainlinkClient, IOracle {
 
-contract Oracle is IOracle
-{
-	IOracleConsensus consensus;
+    address private _oracle;
+    bytes32 private _jobId;
+    uint256 private _fee;
 
-	mapping(uint256 => bool) roots;
+    mapping(uint256 => bool) _validationSuccess;
 
-	constructor( IOracleConsensus _consensus )
-	{
-		consensus = _consensus;
-	}
+    constructor(
+        address oracle_,
+        bytes32 jobId_,
+        uint256 fee_)
+    {
+        setPublicChainlinkToken();
+        _oracle = oracle_;
+        _jobId = jobId_;
+        _fee = fee_;
+     }
 
-	function validate( uint256 fact, uint256[] calldata proof )
-		external view override
-		returns (bool)
-	{
-		// Merkle root must have previously been comitted to by Oracle
-		require( roots[proof[0]] == true );
+    function requestValidation(
+         address user_,
+		address token_,
+		uint256 amount_,
+		uint256 chainId_,
+		uint256 warpAddress_
+    ) external
+    {
+        Chainlink.Request memory request = buildChainlinkRequest(_jobId, address(this), this.fulfill.selector);
 
-		// TODO: verify merkle path authenticator path for `fact`
+        request.add("get", "https://PLACEHOLDER");
+        request.add("path", "PATH.TO.VALIDATION.BOOLEAN");
+        return sendChainlinkRequestTo(_oracle, _request, _fee);
+    }
 
-		return true;
-	}
+    function fulfill() external {}
 
-	function validate( uint256[] memory leaf_parts, uint256[] calldata proof )
-		external view override
-		returns (bool)
-	{
-		return this.validate(uint256(keccak256(abi.encodePacked(leaf_parts))), proof);
-	}
-
-	/**
-	* Provides a new merkle root which can be verified against
-	*/
-	function update( uint256 root, uint256[] calldata state )
-		external
-	{
-		// Ensure root doesn't exist
-		require( false == roots[root] );
-
-		// Ensure consensus has attested to the validity of this root
-		// Consensus may ensure other conditions, that's not a concern of the Oracle though
-		require( consensus.validate(root, state) == true );
-
-		roots[root] =  true;
-	}
+    function validate(
+		address user_,
+		address token_,
+		uint256 amount_,
+		uint256 chainId_,
+		uint256 warpAddress_) override external returns(bool)
+        {
+            //PLACEHOLDER
+            return true;
+        }
 }
